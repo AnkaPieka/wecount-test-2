@@ -44,21 +44,28 @@
               <input type="number" value="5" name="player-level-2" min="0" max="10" />
             </div>
           </div>
-          <input type="Submit" value="Générer points" style="margin-top: 10px" />
+          <input type="submit" value="Générer points" style="margin-top: 10px" />
         </form>
       </section>
 
       <section>
+        <table id="score-from-backend">
+          <!-- <thead><tr><th></th></tr></thead> one THEAD > TR > th per set -->
+          <!-- <tr> one per player -->
+          <!-- <td></td> one per set -->
+          <!-- </tr> -->
+        </table>
+      </section>
+
+      <section>
         <h2>Liste de points générée</h2>
+        <form type="submit" method="post" name="send-list-to-back" id="send-list-to-back">
+          <input type="submit" value="Calculer score final" />
+        </form>
 
         <ul id="random-points-list">
           <!-- <li class="random-point"></li> -->
         </ul>
-
-        <form>
-
-          <button id="send-list-to-back">Calculer score final</button>
-        </form>
       </section>
     </main>
   </body>

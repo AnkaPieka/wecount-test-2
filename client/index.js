@@ -1,7 +1,9 @@
-const axios = require("axios");
 const playerForm = document.getElementById("info-players");
 const htmlListOfPoints = document.getElementById("random-points-list");
 const sendToBackBtn = document.getElementById("send-list-to-back");
+
+let listOfPoints = [];
+let score = {};
 
 playerForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -16,7 +18,6 @@ playerForm.addEventListener("submit", (event) => {
   const player2 = { name: entries["player-name-2"], level: entries["player-level-2"] };
 
   //generate a list of 150 random points
-  let listOfPoints = [];
   const generatePoints = (player1, player2) => {
     let randomNum = Math.floor(Math.random() * 10);
 
@@ -58,7 +59,7 @@ playerForm.addEventListener("submit", (event) => {
     }
   };
 
-  for (let i = 0; i <= 20; i++) {
+  for (let i = 0; i <= 150; i++) {
     generatePoints(player1, player2);
   }
 
@@ -73,6 +74,44 @@ playerForm.addEventListener("submit", (event) => {
   });
 });
 
-sendToBackBtn.addEventListener("submit", (event) => {
-  // axios.post()
+sendToBackBtn.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  try {
+    await fetch("http://localhost:3000/get-score", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(listOfPoints),
+    })
+      .then((response) => response.json())
+      .catch((err) => console.log("An error occured:", err.message));
+  } catch (err) {
+    console.log("ERROR !", err.message);
+  }
 });
+
+///get scores
+// getScoreFromBackBtn.addEventListener("click", async (event) => {
+//   event.preventDefault();
+
+//   try {
+//     fetch("http://localhost:3000/get-score", {
+//       method: "GET",
+//       mode: "cors",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     })
+//       .then((response) => response.json())
+//       .then((data) => {
+//         console.log("data:", data);
+//         score = data;
+//       })
+//       .catch((err) => console.log(err));
+//   } catch (err) {
+//     console.log("ERROR !", err.message);
+//   }
+// });
