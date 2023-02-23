@@ -18,8 +18,8 @@ app.use(express.json());
 
 app.use("/", scoreRoute);
 
-app.use("/", (req, res, next) => {
-  res.json({ message: "App working !" });
-});
+// app.use("/", (req, res, next) => {
+//   res.json({ message: "App working !" });
+// });
 
 module.exports = app;

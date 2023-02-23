@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -50,6 +50,9 @@
 
       <section>
         <table id="score-from-backend">
+          <tr>
+            <td>Table</td>
+          </tr>
           <!-- <thead><tr><th></th></tr></thead> one THEAD > TR > th per set -->
           <!-- <tr> one per player -->
           <!-- <td></td> one per set -->
@@ -59,13 +62,21 @@
 
       <section>
         <h2>Liste de points générée</h2>
-        <form type="submit" method="post" name="send-list-to-back" id="send-list-to-back">
-          <input type="submit" value="Calculer score final" />
-        </form>
+        <div style="display: flex">
+          <form
+            type="submit"
+            method="post"
+            name="send-list-to-back"
+            id="send-list-to-back"
+          >
+            <input type="submit" value="Calculer score final" />
+          </form>
+          <form type="submit" method="get" name="display-results" id="display-results">
+            <input type="submit" value="Afficher résultats" />
+          </form>
+        </div>
 
-        <ul id="random-points-list">
-          <!-- <li class="random-point"></li> -->
-        </ul>
+        <ul id="random-points-list"></ul>
       </section>
     </main>
   </body>

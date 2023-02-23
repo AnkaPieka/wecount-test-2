@@ -1,6 +1,6 @@
 const { json } = require("express");
 
-//identité joueurs
+//players identity
 let player1 = {
   name: "",
   results: [],
@@ -10,65 +10,44 @@ let player2 = {
   results: [],
 };
 
-//winner/looser
+////JEU
+//set results
 let gameRes = [];
 
-//points de chaques joueur / set
+//points of each player by set
 let player1Points = [];
 let player2Points = [];
 
-//ont deux points de diff
-let isTwoPointsAffar = false;
-
-let newListOfPoints = [];
-
-// //arr pour set
+////SET
 let p1 = [];
 let p2 = [];
 
+////LISTS
+let originalListOfPoints = [];
+let newListOfPoints = [];
+
 const calcGame = (listOfPoints) => {
-  newListOfPoints = [...listOfPoints];
+  for (let i = 0; i < listOfPoints.length; i++) {
+    let elem = listOfPoints[i];
 
-  player1.name = listOfPoints[0];
-  player2.name = listOfPoints.find((elem) => elem !== player1.name);
-
-  listOfPoints.forEach((elem) => {
-    while (player1Points.length <= 4 || player2Points.length <= 4 || !isTwoPointsAffar) {
-      newListOfPoints.shift();
-
-      if (
-        Math.abs(player1Points.length - player2Points.length) >= 2 &&
-        (player1Points.length === 4 || player2Points.length === 4)
-      ) {
-        isTwoPointsAffar = true;
-        break;
-      } else {
-        elem === player1.name
-          ? player1Points.push(player1.name)
-          : player2Points.push(player2.name);
-      }
-    }
-
-    if (isTwoPointsAffar) {
+    if (
+      (player1Points.length >= 4 || player2Points.length >= 4) &&
+      Math.abs(player1Points.length - player2Points.length) >= 2
+    ) {
       player1Points.length > player2Points.length
         ? gameRes.push(player1.name)
         : gameRes.push(player2.name);
 
       player1Points = [];
       player2Points = [];
-
-      isTwoPointsAffar = false;
-    } else {
-      return calcGame(newListOfPoints);
     }
 
-    if (
-      gameRes.filter((elem) => elem === player1.name).length === 6 ||
-      gameRes.filter((elem) => elem === player2.name).length === 6
-    ) {
-      return calcSet(gameRes);
-    }
-  });
+    elem === player1.name
+      ? player1Points.push(player1.name)
+      : player2Points.push(player2.name);
+  }
+
+  calcSet(gameRes);
 };
 
 const calcGameDecisive = (listOfPoints) => {
@@ -111,8 +90,6 @@ const calcSet = (gameResArr) => {
 
         p1 = [];
         p2 = [];
-
-        return (gameResArr = []);
       } else {
         if (winner === player1.name) {
           p1.push(winner);
@@ -124,24 +101,26 @@ const calcSet = (gameResArr) => {
 
     if (p1.length === 6 && p2.length === 6) {
       return calcGameDecisive(newListOfPoints);
-    } else if (p1.length >= 7 || p2.length >= 7) {
+    }
+
+    if (p1.length >= 7 || p2.length >= 7) {
       player1.results.push(p1.length);
       player2.results.push(p2.length);
 
       p1 = [];
       p2 = [];
     }
-
-    return (gameRes = []);
   });
 };
 
 exports.calculateScore = (req, res, next) => {
   try {
-    let listOfPoints = req.body;
-    calcGame(listOfPoints);
+    originalListOfPoints = req.body;
+    player1.name = originalListOfPoints[0];
+    player2.name = originalListOfPoints.find((name) => name !== player1.name);
+    calcGame(originalListOfPoints);
 
-    res.status(200).json({ message: "It worked" });
+    res.status(200).json({ message: "List of points ok" });
   } catch (err) {
     res.status(400).json({ message: `ERR! ${err.message}` });
   }
@@ -149,10 +128,7 @@ exports.calculateScore = (req, res, next) => {
 
 exports.sendScore = (req, res, next) => {
   try {
-    res.setHeader("Content-Type", "application/json");
-    res.send({ data: player1, player2 });
-
-    res.status(200).json({ message: "It was sent!" });
+    res.status(200).send([player1, player2]);
   } catch (err) {
     res.status(400).json({ message: `ERR! ${err.message}` });
   }
